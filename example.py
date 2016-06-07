@@ -7,7 +7,7 @@ if not 'DISPLAY' in os.environ.keys():
     matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-from Analyser import *
+import Anchor
 
 AnalysisParameters = \
     {'ImageStackName' : 'stack.tif',\
@@ -28,13 +28,17 @@ AnalysisParameters = \
 
 A = Analyser(AnalysisParameters)
 A.startAnalysis()
-plt.savefig('1.png')
+plt.plot()
+#plt.savefig('1.png')
 
 A.tStorm.plotDrifts()
-plt.savefig('2.png')
+plt.plot()
+#plt.savefig('2.png')
 
 A.tStorm.plotMeanDriftVsXcorr(A.im_stack)
-plt.savefig('3.png')
+plt.plot()
+#plt.savefig('3.png')
 
 A.tStorm.plotError(A.im_stack)
-plt.savefig('4.png')
+plt.plot()
+#plt.savefig('4.png')
