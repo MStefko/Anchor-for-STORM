@@ -1,6 +1,7 @@
 import logging, sys
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG) # can switch to logging.INFO
 
+# Keeps matplotlib working on ssh sessions without a display.
 import os
 if not 'DISPLAY' in os.environ.keys():
     import matplotlib
@@ -19,7 +20,8 @@ import Anchor
  - FrameGrouping: number of images in a single group for averaging (recommended around 20)
  - BeadStabilizing: number of intial frames (after averaging!) for which the stabilization
     is performed (the mean position of these frames is set to 0) (recommended around 10)
- - StackUpscaling: upscaling factor of images before cross-correlation (not recommended)
+ - StackUpscaling: upscaling factor of images before cross-correlation (not recommended
+    - use None)
  - StackSmoothing: True/False, decides if gaussian smoothing is used on images before
     determining drift (recommended True)
  - StackCropping: number of edge pixels cropped from mask images before calculating
@@ -31,7 +33,7 @@ import Anchor
     - StackFrames: array of same size, with corresponding stack frame IDs
     """ 
 
-A1 = \
+AnalysisParameters = \
     {'ImageStackName' : 'stack.tif',\
      'StormFileName' : 'storm.csv',\
      'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
@@ -46,109 +48,20 @@ A1 = \
      'FrameSetup' : {'StormFrames' : [500, 19999],\
                      'StackFrames' : [  1, 10000]},\
      'OutputName' : 'stormdata_corrected.csv',\
-     'figname' : 'orig.png'}
+     }
 
-A2 = \
-    {'ImageStackName' : 'stack.tif',\
-     'StormFileName' : 'storm.csv',\
-     'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
-                        'beads/bead3.csv'],\
-     'FrameGrouping' : 20,\
-     'BeadStabilizing' : None,\
-     'StackUpscaling' : None,\
-     'StackSmoothing' : True,\
-     'StackCropping' : 32,\
-     'StackStabilizing' : None,\
-     'StackNmPerPixel' : 100,\
-     'FrameSetup' : {'StormFrames' : [500, 19999],\
-                     'StackFrames' : [  1, 10000]},\
-     'OutputName' : 'stormdata_corrected.csv',\
-     'figname' : 'nostabilizing.png'}
 
-"""A3 = \
-    {'ImageStackName' : 'stack.tif',\
-     'StormFileName' : 'storm.csv',\
-     'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
-                        'beads/bead3.csv'],\
-     'FrameGrouping' : None,\
-     'BeadStabilizing' : 10,\
-     'StackUpscaling' : None,\
-     'StackSmoothing' : True,\
-     'StackCropping' : 32,\
-     'StackStabilizing' : 10,\
-     'StackNmPerPixel' : 100,\
-     'FrameSetup' : {'StormFrames' : [500, 19999],\
-                     'StackFrames' : [  1, 10000]},\
-     'OutputName' : 'aaa.csv',\
-     'figname':'nogrouping.png'}
-"""
-A4 = \
-    {'ImageStackName' : 'stack.tif',\
-     'StormFileName' : 'storm.csv',\
-     'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
-                        'beads/bead3.csv'],\
-     'FrameGrouping' : 20,\
-     'BeadStabilizing' : 10,\
-     'StackUpscaling' : None,\
-     'StackSmoothing' : False,\
-     'StackCropping' : 32,\
-     'StackStabilizing' : 10,\
-     'StackNmPerPixel' : 100,\
-     'FrameSetup' : {'StormFrames' : [500, 19999],\
-                     'StackFrames' : [  1, 10000]},\
-     'OutputName' : 'stormdata_corrected.csv',\
-     'figname':'nosmoothing.png'}
-
-A5 = \
-    {'ImageStackName' : 'stack.tif',\
-     'StormFileName' : 'storm.csv',\
-     'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
-                        'beads/bead3.csv'],\
-     'FrameGrouping' : 20,\
-     'BeadStabilizing' : 10,\
-     'StackUpscaling' : 3,\
-     'StackSmoothing' : True,\
-     'StackCropping' : 32,\
-     'StackStabilizing' : 10,\
-     'StackNmPerPixel' : 100,\
-     'FrameSetup' : {'StormFrames' : [500, 19999],\
-                     'StackFrames' : [  1, 10000]},\
-     'OutputName' : 'stormdata_corrected.csv',\
-     'figname':'upscaling.png'}
-
-A6 = \
-    {'ImageStackName' : 'stack.tif',\
-     'StormFileName' : 'storm.csv',\
-     'BeadFileNames' : ['beads/bead1.csv', 'beads/bead2.csv',\
-                        'beads/bead3.csv'],\
-     'FrameGrouping' : 20,\
-     'BeadStabilizing' : 10,\
-     'StackUpscaling' : None,\
-     'StackSmoothing' : True,\
-     'StackCropping' : None,\
-     'StackStabilizing' : 10,\
-     'StackNmPerPixel' : 100,\
-     'FrameSetup' : {'StormFrames' : [500, 19999],\
-                     'StackFrames' : [  1, 10000]},\
-     'OutputName' : 'stormdata_corrected.csv',\
-     'figname':'nocropping.png'}
-
-for a in [A1,A2,A4,A5,A6]:
- print(a)
- for i in range(8):
-  plt.figure(i)
-  plt.clf()
- A = Anchor.Analyser(a)
+print(AnalysisParameters)
+A = Anchor.Analyser(AnalysisParameters)
  
- A.startAnalysis()
- #plt.plot()
- plt.savefig('drift_'+a['figname'])
+A.startAnalysis()
 
- A.tStorm.plotMeanDriftVsXcorr(A.im_stack)
- plt.savefig('vs_'+a['figname'])
+#plt.plot()
+plt.savefig('drift.png')
 
+A.tStorm.plotMeanDriftVsXcorr(A.im_stack)
+plt.savefig('vs.png')
 
- A.tStorm.plotError(A.im_stack)
- #plt.plot()
- plt.savefig('error_'+a['figname'])
- del(A)
+A.tStorm.plotError(A.im_stack)
+#plt.plot()
+plt.savefig('error.png')
