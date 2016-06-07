@@ -305,7 +305,7 @@ class ImageStack:
         xs = np.array([d[1] for d in self.drift])
         ys = np.array([d[2] for d in self.drift])
         # Proper scaling of the x axis
-        skip = self.averaging
+        skip = self.averaging if self.averaging else 1.0        
         n = skip * np.arange(len(xs))
         if poly:
             px = np.polyfit(n,xs,poly)

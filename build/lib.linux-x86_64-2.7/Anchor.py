@@ -50,8 +50,10 @@ class Analyser:
     def __init__(self, Params):
         keys = Params.keys()
         if not 'ImageStackName' in keys:
+	    print(keys)
             raise KeyError('.tif image stack is required for analysis. (Key: ImageStackName)')
         if not 'StormFileName' in keys:
+            print(keys)
             raise KeyError('STORM .csv file required. (Key: StormFileName)')
 
         if 'BeadFileNames' in keys:
