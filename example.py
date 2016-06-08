@@ -10,7 +10,8 @@ from matplotlib import pyplot as plt
 
 import Anchor
 
-""" Recap of analysis parameters:
+""" 
+Recap of analysis parameters:
  - ImageStackName: name (path) of .tif file with bright-field image data
  - StormFileName: name (path) of .csv file with STORM fluorescence
     localization data
@@ -31,8 +32,9 @@ import Anchor
  - FrameSetup: used for conversion between Stack frame IDs and STORM frame IDs
     - StormFrames: array of at least 2 STORM frame IDs
     - StackFrames: array of same size, with corresponding stack frame IDs
-    """ 
+        """ 
 
+# Set up analysis parameters.
 AnalysisParameters = \
     {'ImageStackName' : 'stack.tif',\
      'StormFileName' : 'storm.csv',\
@@ -51,17 +53,22 @@ AnalysisParameters = \
      }
 
 
-print(AnalysisParameters)
+# Initialize the analyser with these parameters.
 A = Anchor.Analyser(AnalysisParameters)
  
+# Start the analysis. 
 A.startAnalysis()
+# The output is now saved in 'stormdata_corrected.csv'
 
+# Plot the drift trajectory.
 #plt.plot()
 plt.savefig('drift.png')
 
+# Plot comparison with ThunderSTORM bead tracking.
 A.tStorm.plotMeanDriftVsXcorr(A.im_stack)
 plt.savefig('vs.png')
 
+# Plot difference between Anchor and ThunderSTORM
 A.tStorm.plotError(A.im_stack)
 #plt.plot()
 plt.savefig('error.png')
