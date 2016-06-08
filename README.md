@@ -5,6 +5,7 @@ This is a Python package for determining drift of a sample in a STORM microscope
 # Installation
  1. Clone the repository.
  2. `sudo python setup.py install`
+
 Installation requires NumPy, SciPy, libtiff, Pandas and Matplotlib installed.
 
 # Usage
